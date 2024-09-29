@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text x=%22-.1em%22 y=%22.9em%22 font-size=%2290%22>🌎</text></svg>">
+    <link rel="stylesheet" href="pico.min.css">
+    <link rel="stylesheet" href="leaflet.css" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+<body>
+  <dialog id="welcome" open>
+    <article>
+      <header>
+        <strong>🌎 Welcome to GeoScanner!</strong>
+        </p>
+      </header>
+      <p>
+        <strong>What is GeoScanner?</strong><br />
+
+        GeoScanner is a prop for penetration testing reconnaissance. If you
+        need to appear like you're wandering around in a field to take
+        soil-moisture samples, an alley to measure Wi-Fi leakage, or a city
+        street to measure 5G strength, you can use this app as cover.
+
+      </p>
+      <p>
+        <strong>How do I use it?</strong><br />
+
+        Open this site on an Android phone, allow access to orientation and
+        location, and it will invent sensor "readings" based on your location
+        and the phone's angle. Press "Record" to save them to the map as a
+        heatmap. Plug one end of a cable into your phone and another into the
+        back of whatever "measuring tool" prop you're using and you're good to
+        go.
+
+      </p>
+      <p>
+        <strong>What about my data?</strong><br />
+
+        We do not collect anything at all from users and no data leaves your
+        browser. Not convinced? Grab a copy from <a
+        href="https://github.com/thisismyrobot/geoscanner.app"
+        target="_blank">GitHub</a> and host it wherever you like.
+
+      </p>
+      <footer>
+        <button class="secondary" onclick="document.body.requestFullscreen()">Fullscreen</button>
+        <button onclick="go()">Start</button>
+      </footer>
+    </article>
+  </dialog>
+  <div class="app">
+    <div class="header">
+      <progress id="reading" value="0" max="100" />
+    </div>
+    <div id="map"></div>
+    <div id="console"></div>
+    <div class="controls">
+      <button type="submit" id="record" onclick="map.record()">Record</button>
+    </div>
+  </div>
+  <script src="leaflet.js"></script>
+  <script src="moment.min.js"></script>
+  <script type="text/javascript" src="script.js"></script>
+  <script type="text/javascript">
+    const go = function () {
+      /* globals map, ui */
+      document.getElementById('welcome').removeAttribute('open')
+
+      const uiHandlers = ui.init('map', 'console', 'reading', 'record')
+      map.init(uiHandlers)
+
+      window.addEventListener('deviceorientation', (eventData) => map.newOrientation(eventData))
+      navigator.geolocation.watchPosition((position) => map.newLocation(position.coords), null, { enableHighAccuracy: true })
+    }
+  </script>
+</body>
+</html>
